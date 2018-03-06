@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot name="DataLogger">
+  <link name="laser">
+    <visual>
+      <geometry>
+	<mesh filename="package://div_postprocess/meshes/Lidar_Imu.stl" scale="0.01 0.01 0.01"/>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+<!-- LidarImu.stl"/> -->
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="camera">
+    <visual>
+      <geometry>
+       <mesh filename="package://div_postprocess/meshes/Camera.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 3.14 0" xyz="0 0.0555 -0.014"/>
+    </visual>
+  </link>
+
+  <joint name="laser_to_camera" type="fixed">
+    <parent link="laser"/>
+    <child link="camera"/>
+	<origin xyz="0 0.046 -0.093"/>
+  </joint>
+
+</robot>

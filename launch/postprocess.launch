@@ -1,0 +1,23 @@
+<launch>
+
+	<node name="imu_to_tf" pkg="div_datalogger_postprocess" type="imu_to_tf.py" respawn="false" output="screen"/> <!-- FROM base_link to base_stabilized -->
+
+    <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 map odom 100"/>
+  	<node pkg="tf" type="static_transform_publisher" name="odom_2_base_footprint" args="5 0 0 0 0 0 odom base_footprint 100"/>
+  	<node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 2 0 0 0 base_footprint base_stabilized 100"/> 
+  	<node pkg="tf" type="static_transform_publisher" name="base_link_2_laser" args="0 0 -0.11 0 3.14 0 base_link laser 100"/>
+
+
+  	  	<!-- <node pkg="rviz" type="rviz" name="rviz"/> -->
+  <arg name="model" />
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/urdf.rviz" />
+	
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  <param name="use_gui" value="$(arg gui)"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+   
+</launch>
