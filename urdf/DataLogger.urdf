@@ -3,7 +3,7 @@
   <link name="laser">
     <visual>
       <geometry>
-	<mesh filename="package://div_postprocess/meshes/Lidar_Imu.stl" scale="0.01 0.01 0.01"/>
+	<mesh filename="package://div_datalogger_postprocess/meshes/Lidar_Imu.stl" scale="0.01 0.01 0.01"/>
 	<origin rpy="0 0 0" xyz="0 0 0"/>
 <!-- LidarImu.stl"/> -->
       </geometry>
@@ -13,7 +13,7 @@
   <link name="camera">
     <visual>
       <geometry>
-       <mesh filename="package://div_postprocess/meshes/Camera.stl" scale="0.01 0.01 0.01"/>
+       <mesh filename="package://div_datalogger_postprocess/meshes/Camera.stl" scale="0.01 0.01 0.01"/>
       </geometry>
 	<origin rpy="0 3.14 0" xyz="0 0.0555 -0.014"/>
     </visual>
