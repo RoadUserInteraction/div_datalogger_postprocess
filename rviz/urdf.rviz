@@ -9,6 +9,7 @@ Panels:
         - /RobotModel1
         - /TF1
         - /LaserScan1
+        - /PointCloud1
         - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 366
@@ -30,7 +31,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud
+    SyncSource: Image
 Visualization Manager:
   Class: ""
   Displays:
@@ -79,45 +80,19 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_footprint:
-          Value: true
-        base_link:
-          Value: true
-        base_stabilized:
-          Value: true
-        camera:
-          Value: true
-        imu:
-          Value: true
-        laser:
-          Value: true
-        map:
-          Value: true
-        odom:
-          Value: true
       Marker Scale: 0.5
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        base_stabilized:
-          base_link:
-            laser:
-              camera:
-                {}
-        map:
-          odom:
-            base_footprint:
-              {}
-            imu:
-              {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -130,7 +105,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -147,7 +122,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Class: rviz/Image
       Enabled: true
       Image Topic: /cv_camera/image_raw
@@ -172,7 +147,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -189,7 +164,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -202,7 +177,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: ""
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -219,12 +194,12 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_stabilized
+    Fixed Frame: base_footprint
     Frame Rate: 30
   Name: root
   Tools:
@@ -245,25 +220,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.77219677
+      Distance: 0.308931649
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.196369559
-        Y: 0.0397670269
-        Z: 1.20635557
+        X: -0.0637202337
+        Y: -0.324364305
+        Z: 1.94501746
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.680396616
+      Pitch: -1.08479667
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.37176847
+      Yaw: 6.05995321
     Saved: ~
 Window Geometry:
   Displays:
@@ -283,5 +258,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1216
-  X: 65
+  X: 204
   Y: 24
