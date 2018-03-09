@@ -1,0 +1,59 @@
+<launch>
+
+  <arg name="bag_dir" default="/home/chalmers/bagfiles" />
+  <arg name="file" default="bag_modifiedGPSframe.bag" />
+	<arg name="model" default="$(find div_datalogger_postprocess)/urdf/DataLogger.urdf" />
+	<arg name="gui" default="true" />
+	<arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/postprocessing.rviz" />
+
+  <node pkg="tf" type="tf_remap" name="tf_remapper" output="screen">
+    <rosparam param="mappings">
+      [{old: odom, new: /odom_bag},{old: imu, new: /imu_bag},{old: /gps, new: gps}]
+    </rosparam>
+  </node>
+
+  <node pkg="rosbag" type="play" name="player" args="$(arg bag_dir)/$(arg file) --clock">
+    <!--<remap from="tf" to="tf_old" />-->
+  </node>
+  	<!-- simulation parameter -->  	
+  	<param name="use_sim_time" value="true"/>
+     <!-- TF broadcasters -->
+  <node name="imu_to_tf" pkg="div_datalogger_postprocess" type="imu_to_tf.py" respawn="false" output="screen"/> <!-- FROM base_link to base_stabilized -->
+
+  <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 map odom 100"/>
+  <!--<node pkg="tf" type="static_transform_publisher" name="odom_2_base_footprint" args="5 0 0 0 0 0 odom base_footprint 100"/> -->
+   
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 1.2 0 0 0 base_footprint base_stabilized 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="gps_base_footprint" args="0 0 1.8 0 0 0 base_footprint gps 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_link_2_imu" args="0 0 0 0 0 0 base_link imu 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_link_2_laser" args="-0.0645 0 -0.0134 0 0 3.14 base_link laser 100"/>
+
+
+ <!-- EKF -->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+   <rosparam command="load" file="$(find robot_localization)/params/ekf_template.yaml" /> 
+
+  </node>
+ 
+
+    <!-- URDF 3D model -->
+    <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+    <param name="use_gui" value="$(arg gui)"/>
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+    
+    <!-- Point cloud assembly -->
+    <!-- for package laseŕ assembler -->
+    
+    <node type="laser_scan_assembler" pkg="laser_assembler" name="my_assembler">
+      <remap from="scan" to="/scan"/>
+      <param name="max_scans" type="int" value="100" />
+      <param name="fixed_frame" type="string" value="base_stabilized" />
+      <param name="ignore_laser_skew" type="bool" value="false" />
+    </node>
+    <node type="periodic_snapshotter" name="periodic_snapshotter" pkg="laser_assembler"></node>
+ 
+    <!-- RVIZ -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+</launch>
