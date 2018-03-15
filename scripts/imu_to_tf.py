@@ -12,8 +12,16 @@ child_frame_tf 		= "base_link"
 parent_frame_tf 	= "base_stabilized"
 
 def imu_msg_callback(imu_msg):
-    br.sendTransform((0, -0.3, 0),
-                     (imu_msg.orientation.x, imu_msg.orientation.y, imu_msg.orientation.z, imu_msg.orientation.w),
+
+    #euler = tf.transformations.euler_from_quaternion(imu_msg.orientation)
+    #roll = euler[0]
+    #pitch = -euler[1]
+    #yaw = -euler[2]
+    
+    #quaternion = tf.transformations.quaternion_from_euler(roll, pitch, yaw)
+                     
+    br.sendTransform((0, 0, 0),
+                    (imu_msg.orientation.x, imu_msg.orientation.y, imu_msg.orientation.z, imu_msg.orientation.w),
                      rospy.Time.now(),
                      child_frame_tf,
                      parent_frame_tf)

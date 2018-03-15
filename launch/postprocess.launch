@@ -1,20 +1,20 @@
 <launch>
 
-  <arg name="bag_dir" default="/opt" />
-  <arg name="file" default="2018-03-02-14-57-22_0.bag" />
+  <!--<arg name="bag_dir" default="/home/chalmers/Desktop/2018-PedestrianOvertaking" />
+  <arg name="file" default="2018-03-13-13-23-53_0.bag" /> -->
 	<arg name="model" default="$(find div_datalogger_postprocess)/urdf/DataLogger.urdf" />
 	<arg name="gui" default="true" />
-	<arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/urdf.rviz" />
+	<arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/postprocessing.rviz" />
 
-  <node pkg="tf" type="tf_remap" name="tf_remapper" output="screen">
+  <!--<node pkg="tf" type="tf_remap" name="tf_remapper" output="screen">
     <rosparam param="mappings">
       [{old: odom, new: /odom_bag},{old: imu, new: /imu_bag}]
     </rosparam>
   </node>
 
-  <node pkg="rosbag" type="play" name="player" args="--clock -l $(arg bag_dir)/$(arg file)">
-  <remap from="tf" to="tf_old" />
-  </node>
+  <node pkg="rosbag" type="play" name="player" args="clock -l $(arg bag_dir)/$(arg file)">
+  </node> -->
+
   	<!-- simulation parameter -->  	
   	<param name="use_sim_time" value="true"/>
     <!-- GPS conversion -->
@@ -29,13 +29,14 @@
 
 
 	<!-- TF broadcasters -->
-	<node name="imu_to_tf" pkg="div_datalogger_postprocess" type="imu_to_tf.py" respawn="false" output="screen"/> <!-- FROM base_link to base_stabilized -->
+	<!--<node name="imu_to_tf" pkg="div_datalogger_postprocess" type="imu_to_tf.py" respawn="false" output="screen"/> -->s
+	<!-- FROM base_link to base_stabilized --> 
 
     <!--<node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 map odom 100"/>
   	<node pkg="tf" type="static_transform_publisher" name="odom_2_base_footprint" args="5 0 0 0 0 0 odom base_footprint 100"/> -->
-  	<node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 2 0 0 0 base_footprint base_stabilized 100"/> 
-  	<node pkg="tf" type="static_transform_publisher" name="base_link_2_imu_link" args="-0.0645 0 0.087 0 0 0 base_link imu_link 100"/>
-  	<node pkg="tf" type="static_transform_publisher" name="base_link_2_laser" args="-0.0645 0 -0.0134 0 0 3.14 base_link laser 100"/>
+  	<node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 0.95 0 0 0 base_footprint base_stabilized 100"/> 
+  	<!-- <node pkg="tf" type="static_transform_publisher" name="base_link_2_imu_link" args="-0.0645 0 0.087 0 0 0 base_link imu_link 100"/> 
+  	<node pkg="tf" type="static_transform_publisher" name="base_link_2_imu_link" args="-0.0645 0 -0.0134 0 0 0 base_link imu_link 100"/>-->
 
 
   	<!-- URDF 3D model -->

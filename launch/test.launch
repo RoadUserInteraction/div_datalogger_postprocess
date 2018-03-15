@@ -1,0 +1,108 @@
+<launch>
+
+  <node pkg="tf" type="tf_remap" name="tf_remapper" output="screen">
+    <rosparam param="mappings">
+      [{old: odom, new: /odom_bag},{old: imu, new: /imu_bag},{old: /gps, new: gps}]
+    </rosparam>
+  </node>
+
+  <node pkg="rosbag" type="play" name="player" args="/home/chalmers/bagfiles/2018-03-02-15-00-00_0.bag --clock -l">
+    <!--<remap from="tf" to="tf_old" />-->
+  </node>
+  
+  <!-- simulation parameter -->  	
+  <param name="use_sim_time" value="true"/>
+  
+  <!-- TF broadcasters -->
+  <node name="imu_to_tf" pkg="div_datalogger_postprocess" type="imu_to_tf.py" respawn="false" output="screen"/> <!-- FROM base_link to base_stabilized -->
+
+  <!-- map => odom -->
+  <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 map odom 50"/>
+  <!-- base_footprint => gps -->
+  <node pkg="tf" type="static_transform_publisher" name="gps_base_footprint" args="0 0 0 0 0 0 base_footprint gps 50"/>
+  <!-- base_footprint => imu -->
+  <node pkg="tf" type="static_transform_publisher" name="imu_base_footprint" args="0 0 0 0 0 0.75 base_footprint imu 50"/>
+
+
+  <!--
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true" output="screen">
+    <rosparam command="load" file="$(find div_datalogger_postprocess)/params/ekf_test.yaml" />
+  </node>
+
+  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true"  output="screen">
+    <param name="frequency" value="50"/>
+    <remap from="/imu/data" to="imu/data" />
+    <remap from="/gps/fix" to="fix" />
+    <remap from="/odometry/filtered" to="odometry/filtered" />
+  </node>
+  -->
+
+  
+  <!--
+  <rosparam command="load" file="$(find div_datalogger_postprocess)/params/dual_ekf_test.yaml" />
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_odom"/>
+  </node>
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_maps"/>
+  </node>
+  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true">
+    <remap from="gps/fix" to="fix" />
+  </node>
+-->
+
+
+
+  <node pkg="robot_localization" type="ekf_localization_node"
+     name="ekf_localization" clear_params="true">
+
+    <param name="frequency" value="50"/>
+    <param name="sensor_timeout" value="2.0"/>
+    <param name="two_d_mode" value="true"/>
+    <param name="map_frame" value="map"/>
+    <param name="odom_frame" value="odom"/>
+    <param name="base_link_frame" value="base_footprint"/>
+    <param name="world_frame" value="odom"/>
+    <param name="publish_tf" value="true"/>
+    <param name="imu0" value="imu/data"/>
+    <rosparam param="imu0_config">[false, false, false,
+                                   false,  false,  true,
+                                   false,  false,  false,
+                                   false,  false,  true,
+                                   true,  true,  false]</rosparam>
+
+    <param name="odom0" value="/odometry/filtered"/>
+    <rosparam param="odom0_config">[true, true, false,
+                                   false, false, false,
+                                   false, false, false,
+                                   false, false, false,
+                                   false, false, false]</rosparam>
+  </node>
+ 
+  <node pkg="robot_localization" type="navsat_transform_node"
+      name="navsat_transform_node" respawn="true" output="screen">
+    <param name="frequency" value="50"/>
+    <param name="magnetic_declination_radians" value="0.0640"/>
+    <param name="yaw_offset" value="1.5707963"/>
+    <param name="broadcast_utm_transform" value="false"/>
+    <param name="wait_for_datum" value="false"/>
+    <param name="zero_altitude" value="true"/>
+    <param name="publish_filtered_gps" value="true"/>
+    <param name="use_odometry_yaw" value="true"/>
+
+    <rosparam param="datum">[57.708690, 11.939602, 0.0]</rosparam>
+
+    <remap from="imu/data" to="imu/data" />
+    <remap from="gps/fix" to="fix" />
+</node>
+
+
+  <!-- RVIZ -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rviz_satellite)/launch/demo.rviz"/>
+
+  <node pkg="rostopic" type="rostopic" name="fake_gps_fix" args="pub /fix sensor_msgs/NavSatFix --latch --file=$(find rviz_satellite)/launch/lindholmen.gps" output="screen"/>
+
+
+
+</launch>
