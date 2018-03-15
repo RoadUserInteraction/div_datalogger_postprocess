@@ -63,7 +63,7 @@
 	<arg name="model" default="$(find div_datalogger_postprocess)/urdf/DataLogger.urdf" />
 	<arg name="gui" default="true" />
 	<arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/postprocessing.rviz" />
-	<param name="use_sim_time" value="true"/>
+	<param name="use_sim_time" value="false"/>
 
 	<!-- URDF 3D model -->
   	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
@@ -75,14 +75,14 @@
   	<!-- Point cloud assembly -->
   	<!-- for package laseŕ assembler -->
   	
-  	<node type="laser_scan_assembler" pkg="laser_assembler" name="my_assembler">
+  	<!--<node type="laser_scan_assembler" pkg="laser_assembler" name="my_assembler">
     	<remap from="scan" to="/scan"/>
     	<param name="max_scans" type="int" value="100" />
     	<param name="fixed_frame" type="string" value="base_stabilized" />
     	<param name="ignore_laser_skew" type="bool" value="false" />
   	</node>
-  	<node type="periodic_snapshotter" name="periodic_snapshotter" pkg="laser_assembler"></node>
+  	<node type="periodic_snapshotter" name="periodic_snapshotter" pkg="laser_assembler"></node>-->
  
   	<!-- RVIZ -->
-  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  	<!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />-->
 </launch>
