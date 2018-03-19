@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="DataLogger">
-  <link name="base_link">
+  <link name="base_link_corrected">
     <visual>
       <geometry>
 	<!--<mesh filename="package://div_datalogger_postprocess/meshes/Lidar_Imu.stl" scale="0.01 0.01 0.01"/> -->
@@ -22,10 +22,10 @@
   </link>
 
   <joint name="laser_to_camera" type="fixed">
-    <parent link="base_link"/>
+    <parent link="base_link_corrected"/>
     <child link="laser"/>
 	<!-- <origin rpy="3.14 0 3.14" xyz="0 0 -0.1004"/> -->
-  <origin rpy="3.08 0 3.14" xyz="0 0 -0.1004"/>
+  <origin rpy="3.045 -0.01 3.14" xyz="0 0 -0.1004"/>
   </joint> -->
 
 </robot>
