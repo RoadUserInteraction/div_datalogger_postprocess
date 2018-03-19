@@ -25,7 +25,12 @@
     <parent link="base_link_corrected"/>
     <child link="laser"/>
 	<!-- <origin rpy="3.14 0 3.14" xyz="0 0 -0.1004"/> -->
+
   <origin rpy="3.045 -0.01 3.14" xyz="0 0 -0.1004"/>
-  </joint> -->
+  <!--<origin rpy="3.08 0 3.14" xyz="0 0 -0.1004"/>
+	 <origin rpy="3.0803662551197895 -0.0002771390638497799 2.1965107437291076" xyz="0 0 -0.1004"/> 
+	<origin rpy="3.14 0.008 3.14" xyz="0 0 -0.1004"/>-->
+  </joint>
+
 
 </robot>
