@@ -77,7 +77,7 @@ if __name__ == '__main__':
 			X = (res[0][inds_X])
 			Y = (res[1][inds_X])
 			'''
-			X = (res[1][inds_X])
+			X = (res[0][inds_X])
 			Y = (res[1][inds_X])
 			
 			drawnow(makeHist)
