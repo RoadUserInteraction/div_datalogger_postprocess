@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+import numpy as np
+import matplotlib.pyplot as plt
+import rosbag
+import rospy
+
+import math
+from static rqt bag
+
+if __name__ == '__main__':
+
+
+# Creates a list containing 5 lists, each of 8 items, all set to 0
+r, c = 12, 3;
+M= [[0 for x in range(w)] for y in range(h)] 
+0
+Velocity_M=[['First_0',0.00086029042266,-0.000230406322071,-3.47646385229e-05],
+			['Second_1',0.00081417750516,-0.000317978558728,0.000189661962],
+			['Second_1',0.00081417750516,-0.000317978558728,0.000189661962],
+			['Third_2',0.00081417750516,-0.000317978558728,0.000189661962],
+			]
+Mean Roll is  0.161116370346
+Mean Pitch is  0.6756685564
+Mean Yaw is  58.349004874
+Mean vel_X is  0.00086029042266
+Mean vel_Y is  -0.000230406322071
+Mean vel_Z is  -3.47646385229e-05
+
+1
+Mean Roll is  0.171859238482
+Mean Pitch is  0.695361041996
+Mean Yaw is  58.3300887368
+Mean vel_X is  0.00081417750516
+Mean vel_Y is  -0.000317978558728
+Mean vel_Z is  0.00018966
+2
+Mean Roll is  0.174755419909
+Mean Pitch is  0.703927700624
+Mean Yaw is  58.3260174628
+
+10
+Mean Roll is  0.195834510425
+Mean Pitch is  0.7220818347
+Mean Yaw is  58.6435316708
+
+
+11
+Mean Roll is  0.198705097366
+Mean Pitch is  0.717469948047
+Mean Yaw is  58.4401873966
+
+12
+Mean Roll is  0.189929848712
+Mean Pitch is  0.723499230807
+Mean Yaw is  58.3882964336

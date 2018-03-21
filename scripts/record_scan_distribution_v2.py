@@ -51,17 +51,17 @@ if __name__ == '__main__':
 	idx = 0
 	print 'Reading scan messages ...'
 	for topic, msg, t in bag.read_messages('/scan'):
-		if idx == 0:			
-			x_cart, y_cart = pol2cart(angles, msg.ranges)
+		#if idx == 0:			
+		x_cart, y_cart = pol2cart(angles, msg.ranges)
 
-			# Filter out scan locations within 4 m in x-direction
-			inds_x = np.nonzero(x_cart < 4)
+		# Filter out scan locations within 4 m in x-direction
+		inds_x = np.nonzero(x_cart < 4)
 
-			y = np.append(y, np.array(y_cart[inds_x]), axis=0)
+		y = np.append(y, np.array(y_cart[inds_x]), axis=0)
 
-		idx = idx + 1
-		if idx > 9:
-			idx = 0
+		#idx = idx + 1
+		#if idx > 9:
+		#	idx = 0
 
 	bag.close()
 		
