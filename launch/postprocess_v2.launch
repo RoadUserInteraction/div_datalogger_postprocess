@@ -3,7 +3,7 @@
     <param name="use_sim_time" value="true"/>
 
   <arg name="bag_dir" default="/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection" />
-  <arg name="file" default="2018-03-21-13-53-30_0.bag" /> 
+  <arg name="file" default="2018-03-21-14-13-32_1.bag" /> 
 	<arg name="model" default="$(find div_datalogger_postprocess)/urdf/DataLogger_v2.urdf" />
 	<arg name="gui" default="true" />
 	<arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/postprocessing.rviz" />
@@ -17,7 +17,7 @@
   <node pkg="rosbag" type="play" name="player" args="--clock $(arg bag_dir)/$(arg file)">
   </node>
 
-  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 0 -1.28 0 0 base_footprint base_stabilized 100"/>  
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 1.2 0 0 0 base_footprint base_stabilized 100"/>  
  
 
 	<!-- URDF 3D model -->
@@ -26,7 +26,8 @@
 
 	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-	
+	<!-- RVIZ -->
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 	<!-- Point cloud assembly -->
 	<!-- for package laseŕ assembler -->
 	
@@ -39,8 +40,7 @@
 	</node>
 	<node type="periodic_snapshotter" name="periodic_snapshotter" pkg="laser_assembler"></node>
  
-  	<!-- RVIZ -->
-  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
 
    
 </launch>
