@@ -11,7 +11,7 @@
     </visual>
   </link>
 
-<link name="laser">
+  <link name="laser">
     <visual>
       <geometry>
        <cylinder length="0.06" radius="0.02"/>
@@ -23,9 +23,9 @@
 
   <joint name="laser_to_camera" type="fixed">
     <parent link="base_link"/>
-    <child link="laser"/>
-	<!-- <origin rpy="3.14 0 3.14" xyz="0 0 -0.1004"/> -->
-    <origin rpy="3.08 0.1 3.14" xyz="0 0 -0.1004"/>
+    <child link="laser"/>-->
+	  <origin rpy="3.075 0.095 3.14" xyz="0 0 -0.1004"/> 
+    <!--<origin rpy="3.08 0.1 3.14" xyz="0 0 -0.1004"/>-->
   <!--<origin rpy="3.08 0 3.14" xyz="0 0 -0.1004"/>
 	 <origin rpy="3.0803662551197895 -0.0002771390638497799 2.1965107437291076" xyz="0 0 -0.1004"/> 
 	<origin rpy="3.14 0.008 3.14" xyz="0 0 -0.1004"/>-->

@@ -1,0 +1,37 @@
+<launch>
+      <!-- simulation parameter -->
+  <param name="use_sim_time" value="true"/>
+
+  <arg name="bag_dir" default="/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection" />
+  <!--<arg name="file" default="2018-03-21-14-13-32_1.bag" />-->
+  <arg name="file" default="2018-03-21-13-53-30_0.bag" />
+  <!--<node name="rqt_bag" pkg="rqt_bag" type="rqt_bag" args="||clock $(arg bag_dir)/$(arg file)"/>-->
+  <node pkg="rosbag" type="play" name="player" args="--clock -r 1 -s 105 $(arg bag_dir)/$(arg file)">
+  </node>
+
+  <!-- RVIZ -->
+  <arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/boxing.rviz" />
+
+  <arg name="model" default="$(find div_datalogger_postprocess)/urdf/DataLogger_v2.urdf" />
+  <arg name="gui" default="true" />
+
+  <!-- TF -->
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 1.1 0 0 0 base_footprint base_stabilized 100"/>  
+
+  <!-- URDF 3D model -->
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  <param name="use_gui" value="$(arg gui)"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+	<!-- RVIZ -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
+      <remap from="scan" to="scan" />
+      <rosparam command="load" file="$(find div_datalogger_postprocess)/launch/box_filter.yaml" />
+  </node>
+  
+  <node pkg="div_datalogger_postprocess" type="lat_clearance_node.py" name="lat_clearance_node" output="screen" />
+</launch>

@@ -93,7 +93,7 @@ def get_measurements(bag, start_time=None, end_time=None):
     laser_ori = Quaternion(axis=(0,0,1), radians= 9 * math.pi / 180).rotate(Quaternion(axis=(1,0,0), radians=math.pi))
     # rotation quaternion to transform the laser_frame to the bike_frame
 
-    for topic, msg, t in bag.read_messages(topics=['/imu0/data', '/scan_corrected'],
+    for topic, msg, t in bag.read_messages(topics=['/imu/data', '/scan'],
                                            start_time=start_time,
                                            end_time=end_time):
         '''
@@ -104,7 +104,7 @@ def get_measurements(bag, start_time=None, end_time=None):
             the time range in which the messages are read
         '''
 
-        if topic == '/imu0/data':
+        if topic == '/imu/data':
             # create a quaternion object with the orientation from the IMU
             curr_ori = Quaternion(msg.orientation.w, msg.orientation.x, msg.orientation.y, msg.orientation.z)
             # transform the acceleration from imu_frame to world_frame
@@ -127,14 +127,16 @@ def get_measurements(bag, start_time=None, end_time=None):
                 measurements.append(ma.array([0, 0, acc_x, acc_y], mask=[1, 1, 0, 0]))
 
             # Calculate the angle between the horizontal plane and the laserscan plane
-            v_z_ = curr_ori.rotate(imu_frame.rotate(v_z))
+            #v_z_ = curr_ori.rotate(imu_frame.rotate(v_z))   # ERROR
+            v_z_ = curr_ori * imu_frame * Quaternion(0, 0, 0, 1) * imu_frame.conjugate * curr_ori.conjugate
+
             # estimate pose from scan matching only if the angle is smaller than .05 rad
-            if np.arccos(v_z_[3]) - math.pi > -.05:
+            if np.arccos(v_z_[3]) > -.05:
                 est_pose_bool = True
             else:
                 est_pose_bool = False
 
-        elif topic == "/scan_corrected" and est_pose_bool:
+        elif topic == "/scan" and est_pose_bool:
             # populate the previous pointcloud
             previous_pcl.from_array(current_pcl.to_array())
             # populate the current PCL after having rectify the laser orientation and the current imu rotation w.r.t the world frame
@@ -169,7 +171,7 @@ def get_measurements(bag, start_time=None, end_time=None):
                     # evaluate the speed
                     new_speed = pose_translation / dt  # in bike frame
                     # if the estimated speed is higher than 40 kph, do not save the speed FIXME: this could be improved
-                    if np.linalg.norm(new_speed)*3.6 < 40:
+                    if np.linalg.norm(new_speed)*3.6 < 10:
                         # use the previous pose orientation to set the speed vector into the world_frame
                         prev_speed = np.append(prev_speed, [prev_q.rotate(new_speed)], axis=0)
                         # save the pose orientation for the next iteration
@@ -233,7 +235,7 @@ def kalman(measurements):
     (smoothed_state_means, smoothed_state_covariances) = klm.smooth(measurements)
 
     # uncomment this block if you want to plot the kalman filter results
-    '''plt.subplot(131)
+    plt.subplot(131)
     plt.plot(smoothed_state_means[:, 2], 'b')
     plt.plot(smoothed_state_means[:, 3], 'r')
     plt.plot([x[0] for x in measurements], 'b', marker="o")
@@ -244,16 +246,16 @@ def kalman(measurements):
     plt.plot(smoothed_state_means[:, 1], 'r')
     plt.subplot(133)
     plt.plot(smoothed_state_means[:, 0], smoothed_state_means[:, 1])
-    plt.show()'''
+    plt.show()
     return smoothed_state_means
 
 # change the original bag
-bag = rosbag.Bag("./test2/sync_filtered_test.bag")
+bag = rosbag.Bag("/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection/2018-03-21-14-13-32_1.bag")
 # angles for the Hokuyo laser
 angles = np.linspace(-95, 95, 1521)*math.pi/180.
 print "Appending the measurement list"
 # create the measurement list that is given to the kalman filter
-measurements, ori_q, imu_time, ros_time = get_measurements(bag, start_time=20, end_time=None)
+measurements, ori_q, imu_time, ros_time = get_measurements(bag, start_time=0, end_time=60)
 print "Done!"
 print "Applying Kalman filter"
 # Apply the filter
@@ -261,13 +263,13 @@ pose = kalman(measurements)
 print "Done!"
 print "Write pose to bag file"
 # Copy the initial bag and open it (change the name)
-copyfile('./test2/sync_filtered_test.bag', './test2/sync_filtered_test_with_pose.bag')
-out_bag = rosbag.Bag('./test2/sync_filtered_test_with_pose.bag', 'a')
+'''copyfile('/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection/2018-03-21-14-13-32_1.bag', '/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection/2018-03-21-14-13-32_1_with_pose_startend.bag')
+out_bag = rosbag.Bag('/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection/2018-03-21-14-13-32_1_with_pose_startend.bag', 'a')
 # write the results from the kalman filter
 write_pose_to_bag(out_bag, imu_time, ros_time, pose)
 print 'Re-indexing the bag'
 for done in out_bag.reindex():
     pass
-out_bag.close()
+out_bag.close()'''
 bag.close()
 print 'Done'

@@ -4,20 +4,19 @@
 
   <arg name="bag_dir" default="/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection" />
   <arg name="file" default="2018-03-21-14-13-32_1.bag" /> 
+
+  <node name="rqt_bag" pkg="rqt_bag" type="rqt_bag" args="--clock $(arg bag_dir)/$(arg file)"/>
 	<arg name="model" default="$(find div_datalogger_postprocess)/urdf/DataLogger_v2.urdf" />
 	<arg name="gui" default="true" />
 	<arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/postprocessing.rviz" />
 
-  <!--<node pkg="tf" type="tf_remap" name="tf_remapper" output="screen">
-    <rosparam param="mappings">
-      [{old: odom, new: /odom_bag},{old: imu, new: /imu_bag}]
-    </rosparam>
+  <!--
+
+  <node pkg="rosbag" type="play" name="player" args="||clock $(arg bag_dir)/$(arg file)">
   </node>
 -->
-  <node pkg="rosbag" type="play" name="player" args="--clock $(arg bag_dir)/$(arg file)">
-  </node>
-
   <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 1.2 0 0 0 base_footprint base_stabilized 100"/>  
+   <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_gps" args="0 0 2 0 0 0 base_footprint gps 100"/>  
  
 
 	<!-- URDF 3D model -->
@@ -40,6 +39,7 @@
 	</node>
 	<node type="periodic_snapshotter" name="periodic_snapshotter" pkg="laser_assembler"></node>
  
+<!-- <node pkg="rostopic" type="rostopic" name="fake_gps_fix" args="pub /fix sensor_msgs/NavSatFix ||latch ||file=$(find rviz_satellite)/launch/measurement.gps" output="screen"/>-->
 
 
    

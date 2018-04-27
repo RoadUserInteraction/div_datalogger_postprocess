@@ -1,0 +1,55 @@
+<launch>
+<!-- simulation parameter -->   
+    <param name="use_sim_time" value="true"/>
+
+  <arg name="bag_dir" default="/home/chalmers/Desktop/2018-PedestrianOvertaking/SecondCollection" />
+  <arg name="file" default="2018-03-21-14-13-32_1.bag" /> 
+
+ <!-- <node name="rqt_bag" pkg="rqt_bag" type="rqt_bag" args="||clock $(arg bag_dir)/$(arg file)"/>-->
+	<arg name="model" default="$(find div_datalogger_postprocess)/urdf/DataLogger_v2.urdf" />
+	<arg name="gui" default="true" />
+	<arg name="rvizconfig" default="$(find div_datalogger_postprocess)/rviz/postprocessing.rviz" />
+	
+
+  <node pkg="rosbag" type="play" name="player" args="--clock $(arg bag_dir)/$(arg file)">
+  	<remap from="tf" to="tf_old" />
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_stabilized" args="0 0 1.2 0 0 0 base_footprint base_stabilized 100"/>  
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_gps" args="0 0 1.2 0 0 0 base_footprint gps 100"/>  
+ 
+
+<!-- URDF 3D model -->
+	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+	<param name="use_gui" value="$(arg gui)"/>
+
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+<!-- RVIZ -->
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+	 
+<!-- ROBOT-LOCALIZATION-->
+
+  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true"  output="screen">
+    <param name="frequency" value="50"/>
+    <remap from="/imu/data" to="imu/data" />
+    <remap from="/gps/fix" to="fix" />
+    <remap from="/odometry/filtered" to="odometry/filtered" />
+  </node>
+  <!-- navsat transform node -->
+  <node pkg="tf" type="tf_remap" name="tf_remapper" output="screen">
+    <rosparam param="mappings">
+      [{old: /gps, new: gps}]
+    </rosparam>
+  </node>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find div_datalogger_postprocess)/params/ekf_template_div.yaml" />
+
+
+   <!--  Placeholder for output topic remapping
+    <remap from="odometry/filtered" to=""/>
+    <remap from="accel/filtered" to=""/>
+    -->
+
+  </node>
+</launch>

@@ -25,7 +25,7 @@ if __name__ == '__main__':
 	angleX=[]
 	angleY=[]
 	angleZ=[]
-	ang_velocity_X=[]
+	ang_velocity_X=[] 		
 	ang_velocity_Y=[]
 	ang_velocity_Z=[]
 

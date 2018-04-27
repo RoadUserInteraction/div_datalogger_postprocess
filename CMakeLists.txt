@@ -197,3 +197,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(test src/test.cpp)
+target_link_libraries(test ${catkin_LIBRARIES})
+add_dependencies(test div_datalogger_postprocess_generate_messages_cpp)

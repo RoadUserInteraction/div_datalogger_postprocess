@@ -10,7 +10,7 @@
     <!--<remap from="tf" to="tf_old" />-->
   </node>
   
-  <!-- simulation parameter -->  	
+  <!-- simulation parameter -->   
   <param name="use_sim_time" value="true"/>
   
   <!-- TF broadcasters -->
@@ -28,7 +28,6 @@
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true" output="screen">
     <rosparam command="load" file="$(find div_datalogger_postprocess)/params/ekf_test.yaml" />
   </node>
-
   <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true"  output="screen">
     <param name="frequency" value="50"/>
     <remap from="/imu/data" to="imu/data" />
@@ -40,7 +39,6 @@
   
   <!--
   <rosparam command="load" file="$(find div_datalogger_postprocess)/params/dual_ekf_test.yaml" />
-
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true">
     <remap from="odometry/filtered" to="odometry/filtered_odom"/>
   </node>
